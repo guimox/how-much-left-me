@@ -1,0 +1,405 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<Layout title="How much left me?">
+  <div class="w-full max-w-6xl flex flex-col items-center p-4 space-y-20">
+    <div class="text-center space-y-3 flex items-center flex-col gap-3">
+      <h1 class="text-4xl font-bold text-blue-600 dark:text-blue-400">
+        How much left me?
+      </h1>
+      <p
+        class="text-gray-400 dark:text-gray-200 italic text-lg flex items-center gap-2"
+      >
+        <Icon name="mdi:information" />
+        Based on the life expectancy of 76 years
+      </p>
+      <p class="text-gray-600 dark:text-gray-300 text-lg">
+        See how much you have experienced <b>life</b>
+      </p>
+
+      <div class="w-full max-w-md space-y-4">
+        <div class="relative">
+          <input
+            placeholder="dd/mm/yyyy"
+            class="w-full min-w-full border-2 border-blue-200 rounded-lg p-3 text-center text-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            type="text"
+            id="birthdate"
+            name="birthdate"
+          />
+          <button
+            class="absolute right-0 top-0 bottom-0 bg-blue-600 text-white px-4 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-400 dark:focus:ring-blue-200"
+            id="submitBtn"
+          >
+            Go
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="contentWrapper" class="hidden w-full space-y-20">
+      <div class="w-full max-w-2xl space-y-2 mx-auto">
+        <div class="flex justify-between items-center" id="contentWrapper">
+          <span class="text-sm text-gray-500 dark:text-gray-400" id="yearsLived"
+            >Age: -- years</span
+          >
+          <span class="text-sm text-gray-500 dark:text-gray-400" id="percentage"
+            >--% completed</span
+          >
+        </div>
+        <div
+          class="w-full h-12 bg-gray-200 rounded-md dark:bg-gray-700 overflow-hidden"
+        >
+          <div
+            id="progressBar"
+            class="h-full rounded-full transition-all duration-500 ease-out"
+            style="width: 20%"
+          >
+          </div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span
+            class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2"
+            id="yearsLived"
+            ><Icon name="mdi:baby-carriage" class="text-xl" />Birth</span
+          >
+          <span
+            class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2"
+            id="yearsLived"><Icon name="mdi:death" class="text-xl" />Death</span
+          >
+        </div>
+      </div>
+
+      <div>
+        <h2
+          class="text-xl font-semibold text-center text-gray-700 dark:text-gray-200"
+        >
+          Estimated time remaining
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div
+              class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+              id="yearsRemaining"
+            >
+              --
+            </div>
+            <div class="text-sm text-gray-600 dark:text-gray-300">
+              years remaining
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div
+              class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+              id="daysRemaining"
+            >
+              --
+            </div>
+            <div class="text-sm text-gray-600 dark:text-gray-300">
+              days remaining
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div
+              class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+              id="hoursRemaining"
+            >
+              --
+            </div>
+            <div class="text-sm text-gray-600 dark:text-gray-300">
+              hours remaining
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div
+              class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+              id="minutesRemaining"
+            >
+              --
+            </div>
+            <div class="text-sm text-gray-600 dark:text-gray-300">
+              minutes remaining
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div
+              class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+              id="secondsRemaining"
+            >
+              --
+            </div>
+            <div class="text-sm text-gray-600 dark:text-gray-300">
+              seconds remaining
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center flex-col gap-2">
+        <h2
+          class="text-xl font-semibold text-center text-gray-700 dark:text-gray-200"
+        >
+          Monthly estimate
+        </h2>
+        <p
+          class="text-gray-400 dark:text-gray-200 italic text-lg flex items-center gap-2"
+        >
+          <Icon name="mdi:information" />
+          Each block represents a year while each dot represents a month
+        </p>
+        <div id="heatmap" class="w-full"></div>
+      </div>
+
+      <p
+        class="py-20 text-gray-600 text-2xl text-center dark:text-gray-300 max-w-md mx-auto"
+      >
+        "Based on a global average life expectancy of 76 years. Remember, this
+        is just a number - what matters most is how you spend <b>your time.</b>"
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const birthdateInput = document.getElementById(
+        "birthdate"
+      ) as HTMLInputElement;
+
+      birthdateInput.addEventListener("input", (event) => {
+        const target = event.target as HTMLInputElement;
+        let value = target.value.replace(/\D/g, "");
+
+        if (value.length > 8) {
+          value = value.slice(0, 8);
+        }
+
+        if (value.length > 4) {
+          value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
+        } else if (value.length > 2) {
+          value = `${value.slice(0, 2)}/${value.slice(2)}`;
+        }
+
+        target.value = value;
+      });
+
+      birthdateInput.addEventListener("blur", (event) => {
+        const target = event.target as HTMLInputElement;
+        const value = target.value;
+      });
+    });
+  </script>
+
+  <script>
+    const LIFE_EXPECTANCY = 76;
+    const MONTHS_IN_YEAR = 12;
+
+    function calculateAge(birthdate: string) {
+      const today = new Date();
+      const birth = parseDate(birthdate);
+      let age = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birth.getDate())
+      ) {
+        age--;
+      }
+
+      return age;
+    }
+
+    function parseDate(dateString: string) {
+      const [day, month, year] = dateString.split("/").map(Number);
+      return new Date(year, month - 1, day);
+    }
+
+    function calculateLifePercentage(age: number) {
+      return (age / LIFE_EXPECTANCY) * 100;
+    }
+
+    function calculateMonthsPassed(birthdate: string) {
+      const today = new Date();
+      const birth = parseDate(birthdate);
+      const yearsPassed = today.getFullYear() - birth.getFullYear();
+      const monthsPassedInCurrentYear = today.getMonth() - birth.getMonth();
+
+      return yearsPassed * MONTHS_IN_YEAR + monthsPassedInCurrentYear;
+    }
+
+    function updateDisplay(age: number, percentage: number) {
+      const progressBar = document.getElementById("progressBar");
+      const percentageDisplay = document.getElementById("percentage");
+      const yearsLived = document.getElementById("yearsLived");
+
+      if (!progressBar || !yearsLived || !percentageDisplay) return;
+
+      progressBar.setAttribute("style", `width: ${Math.min(percentage, 100)}%`);
+
+      percentageDisplay.textContent = `${percentage.toFixed(1)}% completed`;
+      yearsLived.textContent = `Age: ${age} years`;
+
+      progressBar.className =
+        "h-full rounded-md transition-all duration-500 ease-out";
+
+      if (percentage > 75) {
+        progressBar.classList.add("bg-red-600");
+      } else if (percentage > 50) {
+        progressBar.classList.add("bg-yellow-500");
+      } else {
+        progressBar.classList.add("bg-blue-600");
+      }
+    }
+
+    function calculateTimeLeft(birthdate: string) {
+      const now = new Date();
+      const birth = parseDate(birthdate);
+      const deathDate = new Date(birth.getTime());
+      deathDate.setFullYear(birth.getFullYear() + LIFE_EXPECTANCY);
+
+      const totalMs = deathDate.getTime() - now.getTime();
+
+      if (totalMs < 0) {
+        return {
+          years: 0,
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+        };
+      }
+
+      const seconds = Math.floor((totalMs / 1000) % 60);
+      const minutes = Math.floor((totalMs / 1000 / 60) % 60);
+      const hours = Math.floor((totalMs / (1000 * 60 * 60)) % 24);
+      const days = Math.floor((totalMs / (1000 * 60 * 60 * 24)) % 365.25);
+      const years = Math.floor(totalMs / (1000 * 60 * 60 * 24 * 365.25));
+
+      return {
+        years,
+        days,
+        hours,
+        minutes,
+        seconds,
+      };
+    }
+
+    function updateTimeRemaining(birthdate: string) {
+      const timeLeft = calculateTimeLeft(birthdate);
+
+      document.getElementById("yearsRemaining")!.textContent =
+        timeLeft.years.toString();
+      document.getElementById("daysRemaining")!.textContent =
+        timeLeft.days.toString();
+      document.getElementById("hoursRemaining")!.textContent =
+        timeLeft.hours.toString();
+      document.getElementById("minutesRemaining")!.textContent =
+        timeLeft.minutes.toString();
+      document.getElementById("secondsRemaining")!.textContent =
+        timeLeft.seconds.toString();
+    }
+
+    function updateHeatmap(birthdate: Date) {
+      const heatmap = document.getElementById("heatmap");
+      if (!heatmap) return;
+      heatmap.innerHTML = "";
+
+      const yearIndicators = document.createElement("div");
+      yearIndicators.className =
+        "flex items-center justify-between w-full max-w-md mb-2";
+
+      heatmap.appendChild(yearIndicators);
+
+      const scrollContainer = document.createElement("div");
+      scrollContainer.className = "w-full overflow-x-auto pb-4";
+
+      const heatmapContent = document.createElement("div");
+      heatmapContent.className =
+        "inline-flex overflow-x-scroll md:overflow-x-auto md:grid md:grid-cols-12 w-full gap-1 px-4";
+
+      const currentDate = new Date();
+      const monthsPassed =
+        (currentDate.getFullYear() - birthdate.getFullYear()) * MONTHS_IN_YEAR +
+        currentDate.getMonth();
+
+      for (let year = 0; year < LIFE_EXPECTANCY; year++) {
+        const yearBlock = document.createElement("div");
+        yearBlock.className =
+          "flex flex-col gap-3 p-1 min-w-24 items-center justify-center dark:bg-gray-800 rounded";
+
+        const yearNumber = document.createElement("div");
+        yearNumber.className = "text-xs text-gray-400 text-center";
+        yearNumber.textContent = (year + 1).toString();
+        yearBlock.appendChild(yearNumber);
+
+        const monthsGrid = document.createElement("div");
+        monthsGrid.className = "grid grid-cols-2 gap-1";
+
+        for (let month = 0; month < MONTHS_IN_YEAR; month++) {
+          const dot = document.createElement("div");
+          dot.className = `w-4 h-4 rounded-sm ${
+            year * MONTHS_IN_YEAR + month <= monthsPassed
+              ? "bg-blue-500 dark:bg-blue-400"
+              : "bg-gray-200 dark:bg-gray-700"
+          }`;
+          monthsGrid.appendChild(dot);
+        }
+
+        yearBlock.appendChild(monthsGrid);
+        heatmapContent.appendChild(yearBlock);
+      }
+
+      scrollContainer.appendChild(heatmapContent);
+      heatmap.appendChild(scrollContainer);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const birthdateInput = document.getElementById(
+        "birthdate"
+      ) as HTMLInputElement;
+      if (!birthdateInput) {
+        console.error("Birthdate input not found");
+        return;
+      }
+
+      const today = new Date().toISOString().split("T")[0];
+      birthdateInput.max = today;
+
+      let timeUpdateInterval: number | undefined;
+
+      birthdateInput.addEventListener("change", (e) => {
+        const contentWrapper = document.getElementById("contentWrapper");
+
+        const target = e.target as HTMLInputElement;
+        const birthdate = target.value;
+        if (!/^\d{2}\/\d{2}\/\d{4}$/.test(birthdate)) {
+          alert("Please enter the date in dd/mm/yyyy format.");
+          return;
+        }
+
+        if (!birthdate) return;
+
+        const age = calculateAge(birthdate);
+        const percentage = calculateLifePercentage(age);
+        const monthsPassed = calculateMonthsPassed(birthdate);
+
+        if (contentWrapper) contentWrapper.classList.remove("hidden");
+
+        const birth = parseDate(birthdate);
+
+        updateDisplay(age, percentage);
+        updateHeatmap(parseDate(birthdate));
+
+        if (timeUpdateInterval) {
+          clearInterval(timeUpdateInterval);
+        }
+
+        updateTimeRemaining(birthdate);
+        timeUpdateInterval = window.setInterval(() => {
+          updateTimeRemaining(birthdate);
+        }, 1000);
+      });
+    });
+  </script>
+</Layout>
